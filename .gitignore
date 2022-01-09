@@ -1,0 +1,5 @@
+tictactoe
+db.sqlite3
+dump.rdb
+.env
+*__pycache__
