@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+
+  backend:
+    container_name: backend
+    
+    build:
+      context: .
+
+    volumes:
+      - django_static:/app/staticfiles
+
+    env_file:
+      - ./.env
+
+    entrypoint: /app/entrypoint.sh
+
+    ports:
+      - "8000:8000"
+
+    links:
+     - redis
+
+    
+  nginx:
+    image: nginx:latest
+
+    build:
+      context: ./nginx
+
+    ports:
+      - 80:8080
+    volumes:
+      # - ./nginx/nginx-setup.conf:/etc/nginx/conf.d/default.conf:ro
+      - django_static:/django_static
+    depends_on:
+      - backend
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
+    expose:
+      - "6379"
+
+volumes:
+  django_static:
